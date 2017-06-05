@@ -5,23 +5,18 @@ Coursera Course: Getting and Cleaning Data
 
 *Below will now explain the steps being carried out in 'run_analysis.R' to get to the final 'tidy' data output*
 
-#LESLIE#
-##LESLIE##
+#LESLIE
 
-#########################
-#create a temp file location and download the zip file to it.
-#temp <- tempfile()
-#download.file("https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip",temp)
-#########################
+##LESLIE
 
-#Load from wd()
-#assume you have downloaded the file and it is called 'Project.zip'
-temp<-"Project.zip"
+#Step 1
+download data set (still in its zipped form) and have it access to it in your working directory
+Call the file 'Project.zip'
 
-#########################
-#stores list of all files that were downloaded
-list_of_files<-unzip(temp)
-#########################
+#Step 2
+Unzip the file and store in a vector the names of all the files you downloaded, call it 'list_of_files'
+
+The vector will return the below, I like to reference index positions when I need to load files (saves from having to type out the file name)
 
 #return below is for 'list_of_files'
 
@@ -54,106 +49,59 @@ list_of_files<-unzip(temp)
 #[27] "./UCI HAR Dataset/train/X_train.txt"                           
 #[28] "./UCI HAR Dataset/train/y_train.txt" 
 
-#########################
-# publish to table the 'features.txt'
-df_features<-read.table(list_of_files[2])
-#create a character vector that has the names of the columns (will use the later)
-# Need to convert the result (factor) to a character vector, this will then be used for column titles
-df_features_name<-as.character(df_features[,2])
-#########################
+#Step 3
+Create a data.table which has the feature names in it (these will be used to generate the variable headings of measurements a little later 
 
-#########################
-#load the dataset body for the 'test' group
-df_test<-read.table(list_of_files[15])
-#load the measurements to pair with the actions
-df_names_test<-read.table(list_of_files[16])
-names(df_names_test)[1]<-"Action"
-names(df_test)[1:561]<-df_features_name
-df_test_merge<-cbind(df_names_test,df_test)
-#########################
+#Step 4 a
+Load in the test dataset into a data table
+Set the names of the measuresments (columns) in the data table to the 'feature' names from Step 3
 
-#########################
-#do what you did for the 'test' dataset for the 'train' set
-df_train<-read.table(list_of_files[27])
-df_names_train<-read.table(list_of_files[28])
-names(df_names_train)[1]<-"Action"
-names(df_train)[1:561]<-df_features_name
-df_train_merge<-cbind(df_names_train,df_train)
-#########################
-
-#########################
-#combine the 'test' and 'train' datasets 
-#Part 1 of the task
-df_merge<-rbind(df_train_merge,df_test_merge)
-#########################
-
-#########################
-#Part 2 - only retain the measurements that relate to 
-# 1:mean(): Mean value
-# 2:std(): Standard deviation
-# want to only keep columns with either 'mean()' or 'std()' strings anywhere in the column name 
-#use '\\b' boundries to return exact matches
-df_merge_keep<-df_merge[ , grep("\\bmean()\\b|\\bstd()\\b|\\bAction\\b", colnames(df_merge))]
-#########################
-
-
-#########################
-#PART 3: add description to activities ('Action Description')
-#Need to join in 'descriptive' activity names to the dataset ('Action' column name in my dataset with their descriptions)
-#read in 'activity_labels.txt
-df_activity_labels<-read.table(list_of_files[1])
-#give the table useful names 'Action' used in the 'df_merge' table we will be joining to shortly.
-names(df_activity_labels)<-c("Action","Action Description")
-
-#merge the actions to the measurements table
-df_merge_keep_activity_labels<-merge(df_merge_keep,df_activity_labels,by="Action",all.x=TRUE)
-#########################
-
-
-#########################
-#Part 4: Clean up the variable names
-#prefix 'f' denotes 'frequency' - add this to the variable name
-names(df_merge_keep_activity_labels)<- sub("^f","frequency-",names(df_merge_keep_activity_labels))
-#prefix 't' denotes 'time' - add this to the variable name
-names(df_merge_keep_activity_labels)<-sub("^t","time-",names(df_merge_keep_activity_labels))
-
-#replace 'mean' with 'mean value'
-names(df_merge_keep_activity_labels)<-sub("\\bmean()\\b","mean value",names(df_merge_keep_activity_labels))
-#replace 'std' with 'standard deviation'
-names(df_merge_keep_activity_labels)<-sub("\\bstd()\\b","standard deviation",names(df_merge_keep_activity_labels))
-#########################
-
-#########################
-#Part 5: create a new data set where you have the 'subject' and 'activity' and have the average for each measurement returned
-#copy the dataframe from part 4 to a new variable ('df_avg')
-df_avg<-df_merge_keep_activity_labels
-
-#First need to get the 'subject' codes into the data frame
-df_subject_train<-read.table(list_of_files[26])
-df_subject_test<-read.table(list_of_files[14])
+#Step 4 b
+Load the 'Activity Description' into a seperate table (pairs activity numbers with their descriptions), you will pair these with the measurement data set shortly
 
 
 
-#Need to combine the 'df_subject_train' and the 'df_subject_test' in the same order as the previous data was combined
-#REFERENCE for order =>> df_merge<-rbind(df_train_merge,df_test_merge)
-df_subject<-rbind(df_subject_train,df_subject_test)
-names(df_subject)[1]<-"Subject"
+#Step 5
+Do what you did in steps 4a and 4b, but this time do it for the 'train' dataset
 
-#Now need to combine the subjects into the 'df_avg' data frame
-df_avg_subject<-cbind(df_avg,df_subject)
-#make the 'Action Description' a character so you can use aggregate functions on it shortly (cant aggregate on factors)
-df_avg_subject$`Action Description`<- as.character(df_avg_subject$`Action Description`)
+You Will now have two datasets with identical column names (different number of records though)
 
-df_final<-aggregate(df_avg_subject,by=list(df_avg_subject$`Action Description`,df_avg_subject$Subject),FUN=mean)
+#Step 6
+Combine the two datasets together (test and train)
 
 
 
-names(df_final)[1]<-"Activity"
-names(df_final)[2]<-"Subject"
+#Step 7
 
-#########################
+Read in the activity labels you want to pair with the activity numbers
+join in the activity description labels on their respective number representations 
 
-#########################
-#disconnect from the download
-#unlink(temp)
-#########################
+#Step 8
+Remove measurements (columns) which do not relate to either mean() or std() measurements.
+
+#Step 9
+Clean up the column headers (variable names)
+Give human readable labels (short hand t and f prefix changed to thier full names), also give full names to measure summaries (mean value and standard deviation)
+
+#Step 10
+Create a new data table (copy the results you have generated in the above steps)
+
+#Step 11
+Create a data table with the subject codes for both the 'train' and 'test' datasets
+combine the two data tables (make sure the order is the same as in step 6 (very important)
+With new data table, 
+Join the subject data table
+
+#Step 12
+use the 'aggregate' function over the data table to return the mean for each activity / subject combination 
+
+#END
+########################
+
+
+
+
+
+
+
+
