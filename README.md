@@ -11,7 +11,7 @@ Coursera Course: Getting and Cleaning Data
 download data set (still in its zipped form) and have it access to it in your working directory
 Call the file 'Project.zip'
 
-#Step 2
+# Step 2
 Unzip the file and store in a vector the names of all the files you downloaded, call it 'list_of_files'
 
 The vector will return the below, I like to reference index positions when I need to load files (saves from having to type out the file name)
@@ -47,53 +47,53 @@ The vector will return the below, I like to reference index positions when I nee
 #[27] "./UCI HAR Dataset/train/X_train.txt"                           
 #[28] "./UCI HAR Dataset/train/y_train.txt" 
 
-#Step 3
+# Step 3
 Create a data.table which has the feature names in it (these will be used to generate the variable headings of measurements a little later 
 
-#Step 4 a
+# Step 4 a
 Load in the test dataset into a data table
 Set the names of the measuresments (columns) in the data table to the 'feature' names from Step 3
 
-#Step 4 b
+# Step 4 b
 Load the 'Activity Description' into a seperate table (pairs activity numbers with their descriptions), you will pair these with the measurement data set shortly
 
 
 
-#Step 5
+# Step 5
 Do what you did in steps 4a and 4b, but this time do it for the 'train' dataset
 
 You Will now have two datasets with identical column names (different number of records though)
 
-#Step 6
+# Step 6
 Combine the two datasets together (test and train)
 
 
 
-#Step 7
+# Step 7
 
 Read in the activity labels you want to pair with the activity numbers
 join in the activity description labels on their respective number representations 
 
-#Step 8
+# Step 8
 Remove measurements (columns) which do not relate to either mean() or std() measurements.
 
-#Step 9
+# Step 9
 Clean up the column headers (variable names)
 Give human readable labels (short hand t and f prefix changed to thier full names), also give full names to measure summaries (mean value and standard deviation)
 
-#Step 10
+# Step 10
 Create a new data table (copy the results you have generated in the above steps)
 
-#Step 11
+# Step 11
 Create a data table with the subject codes for both the 'train' and 'test' datasets
 combine the two data tables (make sure the order is the same as in step 6 (very important)
 With new data table, 
 Join the subject data table
 
-#Step 12
+# Step 12
 use the 'aggregate' function over the data table to return the mean for each activity / subject combination 
 
-#END
+# END
 ########################
 
 
