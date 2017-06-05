@@ -1,15 +1,13 @@
 # 3-Getting-and-Cleaning-Data-Week-4-Assignment
 Coursera Course: Getting and Cleaning Data
 
-*Purpuse of this repo is to answer the Week 4 assignment from the 'Getting and Cleaning Data' subject
+**Purpuse of this repo is to answer the Week 4 assignment from the 'Getting and Cleaning Data' subject**
 
-*Below will now explain the steps being carried out in 'run_analysis.R' to get to the final 'tidy' data output*
+**Below will now explain the steps being carried out in 'run_analysis.R' to get to the final 'tidy' data output**
 
-#LESLIE
 
-##LESLIE
 
-#Step 1
+# Step 1
 download data set (still in its zipped form) and have it access to it in your working directory
 Call the file 'Project.zip'
 
