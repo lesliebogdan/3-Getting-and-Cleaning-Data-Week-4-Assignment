@@ -48,34 +48,37 @@ The vector will return the below, I like to reference index positions when I nee
 #[28] "./UCI HAR Dataset/train/y_train.txt" 
 
 # Step 3
-Create a data.table which has the feature names in it (these will be used to generate the variable headings of measurements a little later 
+Create a data.table which has the feature names in it (these will be used to generate the variable headings of measurements a little later)
+
 
 # Step 4 a
+Load the 'Activity' to a data table for the test dataset
+
+# Step 4 b
 Load in the test dataset into a data table
 Set the names of the measuresments (columns) in the data table to the 'feature' names from Step 3
 
-# Step 4 b
-Load the 'Activity Description' into a seperate table (pairs activity numbers with their descriptions), you will pair these with the measurement data set shortly
-
+# Step 4 c 
+Combine the data tables from 4a and 4b
 
 
 # Step 5
-Do what you did in steps 4a and 4b, but this time do it for the 'train' dataset
+Do what you did in steps 4a,4b and resulting in 4c, but this time do it for the 'train' dataset
 
-You Will now have two datasets with identical column names (different number of records though)
+You Will now have two datasets (result of 4c and 5c respectivly) with identical column names (different number of records though)
 
 # Step 6
 Combine the two datasets together (test and train)
 
-
-
 # Step 7
+Remove measurements (columns) which do not relate to either mean() or std() measurements.
+
+# Step 8
 
 Read in the activity labels you want to pair with the activity numbers
 join in the activity description labels on their respective number representations 
 
-# Step 8
-Remove measurements (columns) which do not relate to either mean() or std() measurements.
+
 
 # Step 9
 Clean up the column headers (variable names)
