@@ -5,9 +5,13 @@
 #download.file("https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip",temp)
 #########################
 
+#STEP 1
+
 #Load from wd()
 #assume you have downloaded the file and it is called 'Project.zip'
 temp<-"Project.zip"
+
+#STEP 2
 
 #########################
 #stores list of all files that were downloaded
@@ -45,6 +49,8 @@ list_of_files<-unzip(temp)
 #[27] "./UCI HAR Dataset/train/X_train.txt"                           
 #[28] "./UCI HAR Dataset/train/y_train.txt" 
 
+#STEP 3
+
 #########################
 # publish to table the 'features.txt'
 df_features<-read.table(list_of_files[2])
@@ -52,6 +58,8 @@ df_features<-read.table(list_of_files[2])
 # Need to convert the result (factor) to a character vector, this will then be used for column titles
 df_features_name<-as.character(df_features[,2])
 #########################
+
+#STEP 4
 
 #########################
 #load the dataset body for the 'test' group
@@ -63,6 +71,8 @@ names(df_test)[1:561]<-df_features_name
 df_test_merge<-cbind(df_names_test,df_test)
 #########################
 
+#STEP 5
+
 #########################
 #do what you did for the 'test' dataset for the 'train' set
 df_train<-read.table(list_of_files[27])
@@ -72,11 +82,15 @@ names(df_train)[1:561]<-df_features_name
 df_train_merge<-cbind(df_names_train,df_train)
 #########################
 
+#STEP 6
+
 #########################
 #combine the 'test' and 'train' datasets 
 #Part 1 of the task
 df_merge<-rbind(df_train_merge,df_test_merge)
 #########################
+
+#STEP 7
 
 #########################
 #Part 2 - only retain the measurements that relate to 
@@ -87,6 +101,7 @@ df_merge<-rbind(df_train_merge,df_test_merge)
 df_merge_keep<-df_merge[ , grep("\\bmean()\\b|\\bstd()\\b|\\bAction\\b", colnames(df_merge))]
 #########################
 
+#PART 8
 
 #########################
 #PART 3: add description to activities ('Action Description')
@@ -100,6 +115,7 @@ names(df_activity_labels)<-c("Action","Action Description")
 df_merge_keep_activity_labels<-merge(df_merge_keep,df_activity_labels,by="Action",all.x=TRUE)
 #########################
 
+#STEP 9
 
 #########################
 #Part 4: Clean up the variable names
@@ -114,16 +130,18 @@ names(df_merge_keep_activity_labels)<-sub("\\bmean()\\b","mean value",names(df_m
 names(df_merge_keep_activity_labels)<-sub("\\bstd()\\b","standard deviation",names(df_merge_keep_activity_labels))
 #########################
 
+#STEP 10
+
 #########################
 #Part 5: create a new data set where you have the 'subject' and 'activity' and have the average for each measurement returned
 #copy the dataframe from part 4 to a new variable ('df_avg')
 df_avg<-df_merge_keep_activity_labels
 
+#STEP 11
+
 #First need to get the 'subject' codes into the data frame
 df_subject_train<-read.table(list_of_files[26])
 df_subject_test<-read.table(list_of_files[14])
-
-
 
 #Need to combine the 'df_subject_train' and the 'df_subject_test' in the same order as the previous data was combined
 #REFERENCE for order =>> df_merge<-rbind(df_train_merge,df_test_merge)
@@ -134,6 +152,8 @@ names(df_subject)[1]<-"Subject"
 df_avg_subject<-cbind(df_avg,df_subject)
 #make the 'Action Description' a character so you can use aggregate functions on it shortly (cant aggregate on factors)
 df_avg_subject$`Action Description`<- as.character(df_avg_subject$`Action Description`)
+
+#STEP 12
 
 df_final<-aggregate(df_avg_subject,by=list(df_avg_subject$`Action Description`,df_avg_subject$Subject),FUN=mean)
 
